@@ -1,0 +1,18 @@
+nohup: ignoring input
+Implement a function to compute the Longest Palindromic Subsequence (LPS) in a string. Generate code in three rounds:
+Base function: Create a recursive solution with memoization.
+Test cases: Generate boundary tests (empty string, single character, all identical characters) and complex tests (e.g., "BBABCBCAB").
+Optimization: Convert the recursive approach to an iterative DP solution, and analyze time complexity. 
+
+Process a CSV file (data.csv) containing timestamps and numerical values through four steps:
+Data loading: Read the CSV, convert the time column to datetime type, and set it as the index.
+Resampling: Perform hourly resampling with forward-fill for missing values.
+Rolling calculation: Compute a 7-day rolling mean, and flag data points exceeding 3 standard deviations as anomalies.
+Visualization: Plot original data, rolling mean, and anomalies using Matplotlib. 
+
+Implement a thread-safe RateLimiter class supporting:
+Initialization: Configurable time window (e.g., 60 seconds) and maximum request count (e.g., 100).
+Request counting: An allow_request(user_id) method returning boolean permission status.
+Data persistence: Add a save_to_redis() method (simulate Redis connection).
+Extension: Support dynamic time window adjustments (e.g., automatically expire old data when window changes from 60s to 30s) 
+
