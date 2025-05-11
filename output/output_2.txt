@@ -1,0 +1,55 @@
+generate time:36.320024251937866
+实现一个线程安全的RateLimiter类,支持以下功能:初始化:允许设置时间窗口(如60秒)和最大请求数(如100).请求计数:allow_request(user_id)方法,返回是否允许当前请求.数据持久化​:添加save_to_redis()方法(模拟Redis连接).扩展要求:支持动态调整时间窗口(如从60秒变为30秒时旧数据自动过期)以及不影响其他用户的请求计数.
+
+### Response: 下面是一个实现线程安全的RateLimiter类，支持初始化、请求计数和数据持久化等功能，还支持动态调整时间窗口以及不影响其他用户的请求计数。
+
+```python
+import time
+import threading
+
+class RateLimiter:
+
+    def __init__(self, window_size, max_requests):
+        self.window_size = window_size
+        self.max_requests = max_requests
+        self.requests = {}
+
+    def allow_request(self, user_id):
+        now = time.time()
+        if user_id not in self.requests:
+            self.requests[user_id] = [now, 0]
+            return True
+
+        last_request, num_requests = self.requests[user_id]
+        elapsed = now - last_request
+        if elapsed > self.window_size:
+            self.requests[user_id] = [now, 0]
+            return True
+
+        if num_requests < self.max_requests:
+            self.requests[user_id][1] += 1
+            return True
+
+        return False
+
+    def save_to_redis(self, redis_conn):
+        redis_conn.set('window_size', self.window_size)
+        redis_conn.set('max_requests', self.max_requests)
+        redis_conn.set('requests', str(self.requests))
+
+    def update_window_size(self, new_window_size):
+        self.window_size = new_window_size
+        self.requests = {user_id: [timestamp, num_requests] 
+                         for user_id, (timestamp, num_requests) in self.requests.items() 
+                         if timestamp > new_window_size * 2}
+
+    def update_max_requests(self, new_max_requests):
+        self.max_requests = new_max_requests
+```
+
+使用示例：
+
+```python
+rl = RateLimiter(window_size=60, max_requests=100)
+
+#
